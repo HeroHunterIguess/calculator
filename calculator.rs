@@ -1,7 +1,25 @@
-
 use std::io;
 use std::io::Write;
 use std::process;
+
+
+/////////////////////    /////////////////////
+//  setting up functions
+/////////////////////    /////////////////////
+
+
+// check is inputted character is an operation
+fn is_op(ch: char) -> bool {
+    ['+', '-', '*', '/'].contains(&ch)
+}
+
+macro_rules! run_operation {
+    ($stack:ident, $op:tt) => {{
+        $stack.push(&$stack[$stack.len() - 2] $op &$stack[$stack.len() - 1]);
+        $stack.remove($stack.len() - 2);
+        $stack.remove($stack.len() - 2);
+    }};
+}
 
 fn main() {
 
@@ -9,36 +27,45 @@ fn main() {
     //  defining variables
     /////////////////////    /////////////////////
 
-    
-    let num_list = vec!["0","1","2","3","4","5","6","7","8","9"];
-    let op_list = vec!["+","-","*","/"];
 
 
     let mut num_build_list = vec![' '];
     num_build_list.clear();
 
-    let mut stack: Vec<f32> = Vec::new();
+    let mut stack: Vec<f64> = Vec::new();
 
-    let mut operation = String::new();
+    let mut negative = false;
+
+    let mut error = false;
+
 
 
     /////////////////////    /////////////////////
     //  taking inputs
     /////////////////////    /////////////////////
 
+
     loop {
+
+        let mut operation = ' ';
+
         print!("> ");
+
+        //taking acutal input
+
         io::stdout().flush().unwrap();
-
-        let mut error = false;
-
         let mut input_equasion = String::new();
+        
+        //reading and formatting input
 
         io::stdin().read_line(&mut input_equasion).expect("error reading line");
-
         let equasion = input_equasion.trim();
 
-        let equasion_list: Vec<char> = equasion.chars().collect();
+        //turning equasion into equasionlist
+
+        let mut equasion_list: Vec<char> = equasion.chars().collect();
+
+        equasion_list.push(' ');
 
 
 
@@ -56,7 +83,6 @@ fn main() {
         //  looping through all characters to parse input
         /////////////////////    /////////////////////
 
-
         
         let mut ind = 0;
 
@@ -64,16 +90,28 @@ fn main() {
 
             let character = equasion_list[ind];
 
+
             /////////////////////    /////////////////////
-            //  get operation
+            //  checking if negative then checking for operation
             /////////////////////    /////////////////////
 
 
-            if op_list.contains(&character.to_string().as_str()) && stack.len() >= 2 {
+            //checking if negative
 
-                operation = character.to_string();
-            } 
-            if op_list.contains(&character.to_string().as_str()) && stack.len() < 2 {
+            if ind < equasion_list.len() {
+                if character == '-' && equasion_list[ind+1].is_digit(10) && num_build_list.is_empty() {
+                    negative = true;
+                }
+            }
+
+            
+            // checking for operation
+
+            if is_op(character) && equasion_list[ind+1] == ' ' {
+                operation = character;
+            }
+
+            if is_op(character) && stack.len() < 2 && negative == false {
 
                 error = true;
                 println!("SYNTAX ERROR: operation found too early");
@@ -85,22 +123,42 @@ fn main() {
             /////////////////////    /////////////////////
 
 
-            if !num_list.contains(&character.to_string().as_str()) && !op_list.contains(&character.to_string().as_str()) && character != ' ' {
+            //syntax error if invalid character is found
+
+            if !character.is_digit(10) && !is_op(character) && character != ' ' && character != '.' {
                 println!("SYNTAX ERROR: unrecognized character found");
                 error = true;
                 break;
             } 
 
-            if num_list.contains(&character.to_string().as_str()) {
+            //push numbers to num_build_list
+
+            if character.is_digit(10) || character == '.' {
                 num_build_list.push(character);
             }
 
-            if character == ' ' && !num_build_list.is_empty() || op_list.contains(&character.to_string().as_str()) && !num_build_list.is_empty() {
+
+            // creating and pushing a non-negative number into stack
+
+            if (character == ' ' || is_op(character)) && (!num_build_list.is_empty()) {
+
+                // collecting all of num_build_list and putting it into unstripped_num
                 let unstripped_num: String = num_build_list.clone().into_iter().collect();
-                let number_into_stack: f32 = unstripped_num.parse().expect("error parsing to f32");
-                stack.push(number_into_stack);
+
+                //cleaning and parsing into 32bit float
+                let number_into_stack: f64 = unstripped_num.parse().expect("error parsing to f64");
+
+                //make negative (if its negative) then push to stack
+
+                if negative == true {
+                    stack.push(0.0-number_into_stack);
+                    negative = false;
+                } else {stack.push(number_into_stack);}
+
+                
                 num_build_list.clear();
-            }
+            } 
+
 
 
             /////////////////////    /////////////////////
@@ -109,35 +167,20 @@ fn main() {
 
 
             if stack.len() >= 2 {
-                if operation == "*" {
-                    stack.push(&stack[stack.len()-1] * &stack[stack.len()-2]);
 
-                    stack.remove(stack.len()-2);
-                    stack.remove(stack.len()-2);
-
+                if operation == '*' {
+                    run_operation!(stack, *);
                 }
-                if operation == "/" {
-                    stack.push(&stack[stack.len()-1] / &stack[stack.len()-2]);
-
-                    stack.remove(stack.len()-2);
-                    stack.remove(stack.len()-2);
-
+                if operation == '/' {
+                    run_operation!(stack, /);
                 }
-                if operation == "-" {
-                    stack.push(&stack[stack.len()-1] - &stack[stack.len()-2]);
-
-                    stack.remove(stack.len()-2);
-                    stack.remove(stack.len()-2);
-
+                if operation == '-' {
+                    run_operation!(stack, -);
                 }
-                if operation == "+" {
-                    stack.push(&stack[stack.len()-1] + &stack[stack.len()-2]);
-
-                    stack.remove(stack.len()-2);
-                    stack.remove(stack.len()-2);
-
+                if operation == '+' {
+                    run_operation!(stack, +);
                 }
-                operation.clear();
+                operation = ' ';
             }
 
             ind += 1;
@@ -148,8 +191,13 @@ fn main() {
         //  print final answer and reset
         /////////////////////    /////////////////////
 
-        if error == false && stack.len() > 0 { 
+
+        if !error && stack.len() > 0 { 
             println!("{}",stack[0]);
+            stack.clear();
+        //reset error
+        } else if error == true {
+            error = false;
             stack.clear();
         }
     }

@@ -54,18 +54,18 @@ fn main() {
         //taking acutal input
 
         io::stdout().flush().unwrap();
-        let mut input_equasion = String::new();
+        let mut input_equation = String::new();
         
         //reading and formatting input
 
-        io::stdin().read_line(&mut input_equasion).expect("error reading line");
-        let equasion = input_equasion.trim();
+        io::stdin().read_line(&mut input_equation).expect("error reading line");
+        let equation = input_equation.trim();
 
-        //turning equasion into equasionlist
+        //turning equation into equationlist
 
-        let mut equasion_list: Vec<char> = equasion.chars().collect();
+        let mut equation_list: Vec<char> = equation.chars().collect();
 
-        equasion_list.push(' ');
+        equation_list.push(' ');
 
 
 
@@ -74,7 +74,7 @@ fn main() {
         /////////////////////    /////////////////////
 
 
-        if equasion.to_lowercase() == "quit" || equasion.to_lowercase() == "q" {
+        if equation.to_lowercase() == "quit" || equation.to_lowercase() == "q" {
             process::exit(0);
         }
 
@@ -86,9 +86,9 @@ fn main() {
         
         let mut ind = 0;
 
-        while ind < equasion_list.len() {
+        while ind < equation_list.len() {
 
-            let character = equasion_list[ind];
+            let character = equation_list[ind];
 
 
             /////////////////////    /////////////////////
@@ -98,8 +98,8 @@ fn main() {
 
             //checking if negative
 
-            if ind < equasion_list.len() {
-                if character == '-' && equasion_list[ind+1].is_digit(10) && num_build_list.is_empty() {
+            if ind < equation_list.len() {
+                if character == '-' && equation_list[ind+1].is_digit(10) && num_build_list.is_empty() {
                     negative = true;
                 }
             }
@@ -107,7 +107,7 @@ fn main() {
             
             // checking for operation
 
-            if is_op(character) && equasion_list[ind+1] == ' ' {
+            if is_op(character) && equation_list[ind+1] == ' ' {
                 operation = character;
             }
 

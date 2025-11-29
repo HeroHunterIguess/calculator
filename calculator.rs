@@ -4,15 +4,16 @@ use std::process;
 
 
 /////////////////////    /////////////////////
-//  setting up functions
+//  setting up functions 
 /////////////////////    /////////////////////
 
 
 // check is inputted character is an operation
 fn is_op(ch: char) -> bool {
-    ['+', '-', '*', '/'].contains(&ch)
+    return ['+', '-', '*', '/'].contains(&ch);
 }
 
+// run the operation based on the provided operation
 macro_rules! run_operation {
     ($stack:ident, $op:tt) => {{
         $stack.push(&$stack[$stack.len() - 2] $op &$stack[$stack.len() - 1]);
@@ -28,7 +29,6 @@ fn main() {
     /////////////////////    /////////////////////
 
 
-
     let mut num_build_list = vec![' '];
     num_build_list.clear();
 
@@ -37,7 +37,6 @@ fn main() {
     let mut negative = false;
 
     let mut error = false;
-
 
 
     /////////////////////    /////////////////////
@@ -66,7 +65,6 @@ fn main() {
         let mut equation_list: Vec<char> = equation.chars().collect();
 
         equation_list.push(' ');
-
 
 
         /////////////////////    /////////////////////
@@ -114,7 +112,7 @@ fn main() {
             if is_op(character) && stack.len() < 2 && negative == false {
 
                 error = true;
-                println!("SYNTAX ERROR: operation found too early");
+                println!("SYNTAX ERROR: incorrect operation placement");
             }
             
 
@@ -160,14 +158,12 @@ fn main() {
             } 
 
 
-
             /////////////////////    /////////////////////
             //  perform operations
             /////////////////////    /////////////////////
 
 
             if stack.len() >= 2 {
-
                 if operation == '*' {
                     run_operation!(stack, *);
                 }
@@ -191,6 +187,16 @@ fn main() {
         //  print final answer and reset
         /////////////////////    /////////////////////
 
+
+        // check if there is more then 1 thing left in stack
+
+        if stack.len() > 1 {
+            println!("SYNTAX ERROR: too few operations");
+            error = true;
+        }
+
+
+        //print out result if everything went well
 
         if !error && stack.len() > 0 { 
             println!("{}",stack[0]);

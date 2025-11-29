@@ -169,6 +169,11 @@ fn main() {
                     run_operation!(stack, *);
                 }
                 if operation == '/' {
+                    if stack[stack.len()-1] == 0.0 {
+                        println!("MATH ERROR: divide by zero -> undefined");
+                        error = true;
+                        break;
+                    }
                     run_operation!(stack, /);
                 }
                 if operation == '-' {
@@ -190,7 +195,7 @@ fn main() {
 
 
         // check if there is more then 1 thing left in stack
-        if stack.len() > 1 {
+        if stack.len() > 1 && !error{
             println!("SYNTAX ERROR: too few operations");
             error = true;
         }

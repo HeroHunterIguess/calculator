@@ -1,3 +1,6 @@
-this calculator is litearlly just a tui calculator written in rust that uses postfix notation
+# Postfix rust calculator
 
-i have a basic alias setup in my shell so i can just run 'calc' and it runs this program
+This is just a simple calculator using postfix notation, written in rust
+This works for any of the 4 basic math operations (+,-,*,/).
+
+The way I personally use this is an alias setup in my shell to run this. 

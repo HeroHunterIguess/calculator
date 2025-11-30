@@ -20,6 +20,12 @@ macro_rules! run_operation {
     }};
 }
 
+//print out error message and set error to true
+fn error_occurred(err_type: &str, err_message: &str, err: &mut bool) {
+    println!("{err_type} ERROR: {err_message}");
+    *err = true;
+}
+
 fn main() {
 
     /////////////////////    /////////////////////
@@ -94,8 +100,7 @@ fn main() {
 
             //syntax error if there is a misplaced operation
             if is_op(character) && stack.len() < 2 && negative == false {
-                println!("SYNTAX ERROR: incorrect operation placement");
-                error = true;
+                error_occurred("SYNTAX", "incorrect operation placement", &mut error);
                 break;
             }
             
@@ -105,8 +110,7 @@ fn main() {
 
             //syntax error if invalid character is found
             if !character.is_digit(10) && !is_op(character) && character != ' ' && character != '.' {
-                println!("SYNTAX ERROR: unrecognized character found");
-                error = true;
+                error_occurred("SYNTAX", "unrecognized character found", &mut error);
                 break;
             } 
 
@@ -120,8 +124,7 @@ fn main() {
 
                 //syntax error if it will be invalid from extra decimal point
                 if num_build_list[num_build_list.len()-1] == '.' {
-                    println!("SYNTAX ERROR: unexpected decimal point");
-                    error = true;
+                    error_occurred("SYNTAX", "unexpected decimal point", &mut error);
                     break;
                 }
 
@@ -130,8 +133,7 @@ fn main() {
 
                 //syntax error if the number has too many decimals
                 if unstripped_num.matches('.').count() > 1 {
-                    println!("SYNTAX ERROR: too many decimals");
-                    error = true;
+                    error_occurred("SYNTAX", "too many decimals", &mut error);
                     break;
                 }
 
@@ -159,8 +161,7 @@ fn main() {
                 if operation == '/' {
                     //math error if there is division by zero
                     if stack[stack.len()-1] == 0.0 {
-                        println!("MATH ERROR: divide by zero -> undefined");
-                        error = true;
+                        error_occurred("MATH" "div/0 -> undefined", &mut error);
                         break;
                     }
                     run_operation!(stack, /);
@@ -184,8 +185,7 @@ fn main() {
 
         //check if there is more then 1 thing left in stack
         if stack.len() > 1 && !error{
-            println!("SYNTAX ERROR: too few operations");
-            error = true;
+            error_occurred("SYNTAX", "too few operations", &mut error);
         }
 
         //print out result if everything went well

@@ -2,18 +2,16 @@ use std::io;
 use std::io::Write;
 use std::process;
 
-
 /////////////////////    /////////////////////
 //  setting up functions 
 /////////////////////    /////////////////////
 
-
-// check is inputted character is an operation
+//check is inputted character is an operation
 fn is_op(ch: char) -> bool {
     return ['+', '-', '*', '/'].contains(&ch);
 }
 
-// run the operation based on the provided operation
+//run the operation based on the provided operation
 macro_rules! run_operation {
     ($stack:ident, $op:tt) => {{
         $stack.push(&$stack[$stack.len() - 2] $op &$stack[$stack.len() - 1]);
@@ -28,9 +26,7 @@ fn main() {
     //  defining variables
     /////////////////////    /////////////////////
 
-
-    let mut num_build_list = vec![' '];
-    num_build_list.clear();
+    let mut num_build_list: Vec<char> = Vec::new();
 
     let mut stack: Vec<f64> = Vec::new();
 
@@ -38,11 +34,9 @@ fn main() {
 
     let mut error = false;
 
-
     /////////////////////    /////////////////////
     //  taking inputs
     /////////////////////    /////////////////////
-
 
     loop {
 
@@ -50,34 +44,31 @@ fn main() {
 
         print!("> ");
 
-        //taking acutal input
+        //getting acutal input
         io::stdout().flush().unwrap();
         let mut input_equation = String::new();
         
         //reading and formatting input
-        io::stdin().read_line(&mut input_equation).expect("error reading line");
+        io::stdin().read_line(&mut input_equation).expect("error reading user input line");
         let equation = input_equation.trim();
 
         //turning equation into equationlist
         let mut equation_list: Vec<char> = equation.chars().collect();
-
+        
+        //add empty char at the end to deal with some weird edge cases
         equation_list.push(' ');
-
 
         /////////////////////    /////////////////////
         //  quit process if needed
         /////////////////////    /////////////////////
 
-
         if equation.to_lowercase() == "quit" || equation.to_lowercase() == "q" {
             process::exit(0);
         }
 
-
         /////////////////////    /////////////////////
         //  looping through all characters to parse input
         /////////////////////    /////////////////////
-
         
         let mut ind = 0;
 
@@ -85,11 +76,9 @@ fn main() {
 
             let character = equation_list[ind];
 
-
             /////////////////////    /////////////////////
             //  checking if negative then checking for operation
             /////////////////////    /////////////////////
-
 
             //checking if negative
             if ind < equation_list.len() {
@@ -98,22 +87,21 @@ fn main() {
                 }
             }
             
-            // checking for operation
+            //checking for operation
             if is_op(character) && equation_list[ind+1] == ' ' {
                 operation = character;
             }
 
+            //syntax error if there is a misplaced operation
             if is_op(character) && stack.len() < 2 && negative == false {
                 println!("SYNTAX ERROR: incorrect operation placement");
                 error = true;
                 break;
             }
             
-
             /////////////////////    /////////////////////
             //  parse number input
             /////////////////////    /////////////////////
-
 
             //syntax error if invalid character is found
             if !character.is_digit(10) && !is_op(character) && character != ' ' && character != '.' {
@@ -130,16 +118,17 @@ fn main() {
             // creating and pushing number into stack
             if (character == ' ' || is_op(character)) && (!num_build_list.is_empty()) {
 
-                // error if it will be invalid
+                //syntax error if it will be invalid from extra decimal point
                 if num_build_list[num_build_list.len()-1] == '.' {
                     println!("SYNTAX ERROR: unexpected decimal point");
                     error = true;
                     break;
                 }
 
-                // collecting all of num_build_list and putting it into unstripped_num
+                //collecting all of num_build_list and putting it into unstripped_num
                 let unstripped_num: String = num_build_list.clone().into_iter().collect();
 
+                //syntax error if the number has too many decimals
                 if unstripped_num.matches('.').count() > 1 {
                     println!("SYNTAX ERROR: too many decimals");
                     error = true;
@@ -155,20 +144,20 @@ fn main() {
                     negative = false;
                 } else {stack.push(number_into_stack);}
 
+                //clear num_build_list to prepare for the next number if there is another
                 num_build_list.clear();
             } 
-
 
             /////////////////////    /////////////////////
             //  perform operations
             /////////////////////    /////////////////////
-
 
             if stack.len() >= 2 {
                 if operation == '*' {
                     run_operation!(stack, *);
                 }
                 if operation == '/' {
+                    //math error if there is division by zero
                     if stack[stack.len()-1] == 0.0 {
                         println!("MATH ERROR: divide by zero -> undefined");
                         error = true;
@@ -185,16 +174,15 @@ fn main() {
                 operation = ' ';
             }
 
+            //increase index of current character to parse
             ind += 1;
         }
-
 
         /////////////////////    /////////////////////
         //  print final answer and reset
         /////////////////////    /////////////////////
 
-
-        // check if there is more then 1 thing left in stack
+        //check if there is more then 1 thing left in stack
         if stack.len() > 1 && !error{
             println!("SYNTAX ERROR: too few operations");
             error = true;

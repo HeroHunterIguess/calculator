@@ -155,23 +155,22 @@ fn main() {
             /////////////////////    /////////////////////
 
             if stack.len() >= 2 {
-                if operation == '*' {
-                    run_operation!(stack, *);
-                }
-                if operation == '/' {
-                    //math error if there is division by zero
-                    if stack[stack.len()-1] == 0.0 {
-                        error_occurred("MATH" "div/0 -> undefined", &mut error);
-                        break;
+
+                //match operation to actually run it 
+                match operation {
+                    '*' => {run_operation!(stack, *);}
+                    '/' => {
+                        //math error if there is division by zero
+                        if stack[stack.len()-1] == 0.0 {
+                            error_occurred("MATH", "div/0 -> undefined", &mut error);
+                            break;
+                        } else {run_operation!(stack, /);}
                     }
-                    run_operation!(stack, /);
+                    '-' => {run_operation!(stack, -);}
+                    '+' => {run_operation!(stack, +);}
+                    _ => {}
                 }
-                if operation == '-' {
-                    run_operation!(stack, -);
-                }
-                if operation == '+' {
-                    run_operation!(stack, +);
-                }
+                
                 operation = ' ';
             }
 
@@ -191,7 +190,6 @@ fn main() {
         //print out result if everything went well
         if !error && stack.len() > 0 { 
             println!("{}",stack[0]);
-            stack.clear();
         }
 
         //reset 

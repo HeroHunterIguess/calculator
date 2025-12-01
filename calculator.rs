@@ -160,6 +160,7 @@ fn main() {
                 match operation {
                     '*' => {run_operation!(stack, *);}
                     '/' => {
+                        
                         //math error if there is division by zero
                         if stack[stack.len()-1] == 0.0 {
                             error_occurred("MATH", "div/0 -> undefined", &mut error);

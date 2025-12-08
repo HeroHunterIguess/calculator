@@ -78,9 +78,9 @@ fn main() {
         
         let mut ind = 0;
 
-        while ind < equation_list.len() {
         //test out `for ind in equation_list.len() {`
         //if i do this dont forget to remove the ind+=1 at the end of this loop
+        while ind < equation_list.len() {
 
             let character = equation_list[ind];
 
@@ -178,7 +178,8 @@ fn main() {
             }
 
             //increase index of current character to parse
-            ind += 1;
+            //remove this line if i change to for loop
+            ind += 1; 
         }
 
         /////////////////////    /////////////////////

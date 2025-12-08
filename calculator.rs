@@ -75,12 +75,8 @@ fn main() {
         /////////////////////    /////////////////////
         //  looping through all characters to parse input
         /////////////////////    /////////////////////
-        
-        let mut ind = 0;
 
-        //test out `for ind in equation_list.len() {`
-        //if i do this dont forget to remove the ind+=1 at the end of this loop
-        while ind < equation_list.len() {
+        for ind in 0..equation_list.len() {
 
             let character = equation_list[ind];
 
@@ -140,7 +136,7 @@ fn main() {
                 }
 
                 //cleaning and parsing into 64bit float
-                let number_into_stack: f64 = unstripped_num.parse().expect("error parsing to f64");
+                let number_into_stack: f64 = unstripped_num.parse().expect("error parsing number to f64");
 
                 //make negative (if its negative) then push to stack
                 if negative == true {
@@ -176,10 +172,6 @@ fn main() {
                 
                 operation = ' ';
             }
-
-            //increase index of current character to parse
-            //remove this line if i change to for loop
-            ind += 1; 
         }
 
         /////////////////////    /////////////////////

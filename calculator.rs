@@ -79,6 +79,8 @@ fn main() {
         let mut ind = 0;
 
         while ind < equation_list.len() {
+        //test out `for ind in equation_list.len() {`
+        //if i do this dont forget to remove the ind+=1 at the end of this loop
 
             let character = equation_list[ind];
 

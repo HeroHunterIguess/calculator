@@ -6,12 +6,12 @@ use std::process;
 //  setting up functions 
 /////////////////////    /////////////////////
 
-//check is inputted character is an operation
+//check if inputted character is an operation
 fn is_op(ch: char) -> bool {
     return ['+', '-', '*', '/'].contains(&ch);
 }
 
-//run the operation based on the provided operation
+//run operation based on the provided symbol
 macro_rules! run_operation {
     ($stack:ident, $op:tt) => {{
         $stack.push(&$stack[$stack.len() - 2] $op &$stack[$stack.len() - 1]);
@@ -27,17 +27,13 @@ fn error_occurred(err_type: &str, err_message: &str, err: &mut bool) {
 }
 
 fn main() {
-
     /////////////////////    /////////////////////
     //  defining variables
     /////////////////////    /////////////////////
 
     let mut num_build_list: Vec<char> = Vec::new();
-
     let mut stack: Vec<f64> = Vec::new();
-
     let mut negative = false;
-
     let mut error = false;
 
     /////////////////////    /////////////////////
@@ -45,7 +41,7 @@ fn main() {
     /////////////////////    /////////////////////
 
     loop {
-
+        
         let mut operation = ' ';
 
         print!("> ");
@@ -58,10 +54,10 @@ fn main() {
         io::stdin().read_line(&mut input_equation).expect("error reading user input line");
         let equation = input_equation.trim();
 
-        //turning equation into equationlist
+        //turning equation into equation_list
         let mut equation_list: Vec<char> = equation.chars().collect();
         
-        //add empty char at the end to deal with some weird edge cases
+        //add empty char at the end to deal with some edge cases
         equation_list.push(' ');
 
         /////////////////////    /////////////////////
@@ -73,11 +69,11 @@ fn main() {
         }
 
         /////////////////////    /////////////////////
-        //  looping through all characters to parse input
+        //  looping through all chars to parse input
         /////////////////////    /////////////////////
 
         for ind in 0..equation_list.len() {
-
+            
             let character = equation_list[ind];
 
             /////////////////////    /////////////////////
@@ -117,7 +113,7 @@ fn main() {
                 num_build_list.push(character);
             }
 
-            // creating and pushing number into stack
+            //creating and pushing number into stack
             if (character == ' ' || is_op(character)) && !num_build_list.is_empty() {
 
                 //syntax error if it will be invalid from extra decimal point
@@ -144,7 +140,7 @@ fn main() {
                     negative = false;
                 } else {stack.push(number_into_stack);}
 
-                //clear num_build_list to prepare for the next number if there is another
+                //clear num_build_list to prepare for the next number
                 num_build_list.clear();
             } 
 
@@ -154,7 +150,7 @@ fn main() {
 
             if stack.len() >= 2 {
 
-                //match operation to actually run it 
+                //match operation & run it
                 match operation {
                     '*' => {run_operation!(stack, *);}
                     '/' => {
@@ -179,7 +175,7 @@ fn main() {
         /////////////////////    /////////////////////
 
         //check if there is more then 1 thing left in stack
-        if stack.len() > 1 && !error{
+        if stack.len() > 1 && !error {
             error_occurred("SYNTAX", "too few operations", &mut error);
         }
 

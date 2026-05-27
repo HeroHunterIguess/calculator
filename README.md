@@ -6,4 +6,4 @@ This works for any of the 4 basic math operations (+,-,*,/).
 
 The way I personally use this is an alias setup in my shell to run this. 
 
-If you come up with any suggestions please do contact (my discord is on my about me) so I can potentially improve things. 
+If you come up with any suggestions please do contact me (my discord is on my about me) so I can continue to improve this. 

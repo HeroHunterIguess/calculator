@@ -64,7 +64,7 @@ fn main() {
         //  quit process if needed
         /////////////////////    /////////////////////
 
-        if equation.to_lowercase() == "quit" || equation.to_lowercase() == "q" {
+        if equation.to_lowercase() == "quit" || equation.to_lowercase() == "q" || equation.to_lowercase() == "exit" {
             process::exit(0);
         }
 
